@@ -118,8 +118,8 @@ export default function App() {
     
     const initDisplayChordList = useCallback(() => {
         const list = [];
-        // 限制最多10个和弦
-        for (let i = 0; i < Math.min(10, chords.length); i++) {
+        // 限制最多50个和弦
+        for (let i = 0; i < Math.min(50, chords.length); i++) {
             list.push(chords[getRandomChordIndex()]);
         }
         setDisplayChordList(list);
