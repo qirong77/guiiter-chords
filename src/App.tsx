@@ -5,10 +5,12 @@ export default function App() {
         <div style={{ padding: "20px" }}>
             <Chord
                 title="Am"
-                mark={["x", "o", "", "", "o"]}
+                xMarks={[6]}
+                oMarks={[2, 1]}
                 strings={[
-                    [2, 1], // 第2品第1弦（从左数第2根弦）
-                    [2, 2], // 第2品第2弦
+                    [1, 2],
+                    [2, 3], // 第2品第3弦
+                    [2, 4], // 第2品第4弦
                 ]}
             />
         </div>
