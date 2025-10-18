@@ -9,6 +9,20 @@ export function Chord(props: { title: string; xMarks: number[]; oMarks: number[]
                 <Cell showXLeft={props.xMarks.includes(3)} showOLeft={props.oMarks.includes(3)} showORight={props.oMarks.includes(2)} />
                 <Cell showXLeft={props.xMarks.includes(2)} showXRight={props.xMarks.includes(1)} showORight={props.oMarks.includes(1)} />
             </ChordRow>
+            <ChordRow>
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+            </ChordRow>
+                        <ChordRow>
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+                <Cell showXLeft={false} showOLeft={false} showXRight={false} showORight={false} />
+            </ChordRow>
         </div>
     );
 }
