@@ -117,3 +117,13 @@
   position: relative;
   z-index: 10;
 }
+
+/* 和弦滚动动画 */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%); /* 移动1/3的距离，因为我们渲染了3倍的列表 */
+  }
+}
