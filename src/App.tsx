@@ -8,16 +8,21 @@ interface ChordData {
     oMarks: number[];
     strings: [number, number][];
 }
-
+const SPEED_KEY = 'scrollSpeed';
 export default function App() {
     // 状态管理
     const [currentChordIndex, setCurrentChordIndex] = useState<number>(-1);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [playSpeed, setPlaySpeed] = useState<number>(2000); // 播放速度(毫秒)
     const [displayChordList, setDisplayChordList] = useState<ChordData[]>([]);
-
+    const [scrollPosition, setScrollPosition] = useState<number>(0); // 滚动位置
+    const [scrollSpeed, setScrollSpeed] = useState<number>(parseInt(window.localStorage.getItem(SPEED_KEY) || "30", 10)); // 滚动速度 (像素/秒)
+    useEffect(()=>{
+        window.localStorage.setItem(SPEED_KEY, scrollSpeed.toString());
+    },[scrollSpeed])
     // 滚动容器引用
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const animationFrameRef = useRef<number>();
     // 所有和弦数据
     const chords: ChordData[] = [
         {
@@ -121,9 +126,11 @@ export default function App() {
     };
     const initDisplayChordList = () => {
         setDisplayChordList([]);
+        setScrollPosition(0);
         const list = [];
-        for (let i = 0; i < 10; i++) {
-            list.push(chords[getRandomChordIndex()]);
+        // 创建更多和弦来支持连续滚动
+        for (let i = 0; i < 20; i++) {
+            list.push(chords[Math.floor(Math.random() * chords.length)]);
         }
         setDisplayChordList(list);
     };
@@ -160,23 +167,57 @@ export default function App() {
         });
     }, [currentChordIndex]);
 
-    // 自动滚动到最新的和弦
+    // 连续滚动动画
     useEffect(() => {
-        if (scrollContainerRef.current && displayChordList.length > 0) {
-            // 滚动到最右侧（最新的和弦）
-            scrollContainerRef.current.scrollTo({
-                left: scrollContainerRef.current.scrollWidth,
-                behavior: "smooth",
-            });
+        let lastTime = 0;
+        
+        const animate = (currentTime: number) => {
+            if (lastTime === 0) lastTime = currentTime;
+            const deltaTime = currentTime - lastTime;
+            
+            if (isPlaying && scrollContainerRef.current) {
+                setScrollPosition(prev => {
+                    const newPosition = prev + (scrollSpeed * deltaTime / 1000);
+                    // 计算单个列表的总宽度（包括间距）
+                    const singleListWidth = displayChordList.length * (120 + 30); // 120px宽度 + 30px间距
+                    // 当滚动到一半时重置到开始，实现无缝循环
+                    return newPosition >= singleListWidth ? newPosition - singleListWidth : newPosition;
+                });
+            }
+            
+            lastTime = currentTime;
+            
+            if (isPlaying) {
+                animationFrameRef.current = requestAnimationFrame(animate);
+            }
+        };
+        
+        if (isPlaying && displayChordList.length > 0) {
+            animationFrameRef.current = requestAnimationFrame(animate);
         }
-    }, [displayChordList]);
+        
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [isPlaying, scrollSpeed, displayChordList.length]);
+
+    // 应用滚动位置
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollLeft = scrollPosition;
+        }
+    }, [scrollPosition]);
+    useEffect(()=>{
+      togglePlay()
+    },[])
     return (
-        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-            <div style={{ height: 300, overflow: "scroll", border: "1px solid #5b5656ff", marginBottom: 20 }}>
+        <div style={{ maxHeight: "100vh", display: "flex", flexDirection: "column" }}>
+            <div style={{ overflow: "scroll", border: "1px solid #5b5656ff", marginBottom: 20 }}>
                 {/* 和弦显示区域 */}
                 <div
                     style={{
-                        flex: 1,
                         padding: "20px",
                         display: "flex",
                         flexWrap: "wrap",
@@ -188,10 +229,10 @@ export default function App() {
                         <div
                             key={`${chord.title}-${index}`}
                             style={{
-                                border: currentChordIndex === index ? "3px solid #007acc" : "1px solid transparent",
+                                // border: currentChordIndex === index ? "3px solid #007acc" : "1px solid transparent",
                                 borderRadius: "8px",
                                 padding: "5px",
-                                background: currentChordIndex === index ? "#f0f8ff" : "transparent",
+                                // background: currentChordIndex === index ? "#f0f8ff" : "transparent",
                                 transition: "all 0.3s ease",
                             }}
                         >
@@ -205,37 +246,44 @@ export default function App() {
                 style={{
                     display: "flex",
                     width: "100%",
-                    overflow: "scroll",
-                    overflowY: "hidden", // 只允许水平滚动
-                    scrollbarWidth: "thin", // Firefox 细滚动条
-                    padding: "10px 0",
-                    background: "#fafafa",
+                    overflow: "hidden", // 隐藏滚动条，实现无缝效果
+                    overflowY: "hidden",
+                    marginBottom: 20,
+                    height:'300px',
+                    paddingTop:'20px',
+                    background: "linear-gradient(90deg, #fafafa 0%, #f0f0f0 50%, #fafafa 100%)",
                     border: "1px solid #e0e0e0",
                     borderRadius: "8px",
+                    position: "relative",
                 }}
             >
-                {displayChordList.map((chord, index) => (
-                    <div
-                        key={`${chord.title}-${index}`}
-                        style={{
-                            marginRight: 8,
-                            flexShrink: 0, // 防止和弦被压缩
-                            opacity: index === displayChordList.length - 1 ? 1 : 0.7, // 最新的和弦高亮
-                            transform: index === displayChordList.length - 1 ? "scale(1.05)" : "scale(1)",
-                            transition: "all 0.3s ease",
-                        }}
-                    >
-                        <Chord title={chord.title} xMarks={chord.xMarks} oMarks={chord.oMarks} strings={chord.strings} />
-                    </div>
-                ))}
+                {/* 渲染两倍的和弦列表以实现无缝循环 */}
+                {[...displayChordList, ...displayChordList].map((chord, index) => {
+                    const actualIndex = index % displayChordList.length;
+                    
+                    return (
+                        <div
+                            key={`${chord.title}-${index}`}
+                            style={{
+                                marginRight: '10vw',
+                                flexShrink: 0,
+                                minWidth: "120px", // 确保每个和弦有固定宽度
+                                filter: `hue-rotate(${actualIndex * 30}deg)`,
+                            }}
+                        >
+                            <Chord 
+                                title={chord.title} 
+                                xMarks={chord.xMarks} 
+                                oMarks={chord.oMarks} 
+                                strings={chord.strings} 
+                            />
+                        </div>
+                    );
+                })}
             </div>
             {/* 底部控制栏 */}
             <div
                 style={{
-                    position: "fixed",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
                     background: "#f5f5f5",
                     borderTop: "1px solid #ddd",
                     padding: "15px 20px",
@@ -273,9 +321,9 @@ export default function App() {
                     {currentChordIndex >= 0 ? `当前: ${chords[currentChordIndex].title}` : "未播放"}
                 </div>
 
-                {/* 速度控制 */}
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
-                    <span style={{ fontSize: "14px", minWidth: "60px" }}>速度:</span>
+                {/* 和弦切换速度控制 */}
+                {/* <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
+                    <span style={{ fontSize: "14px", minWidth: "80px" }}>切换速度:</span>
                     <input
                         type="range"
                         min="500"
@@ -286,6 +334,21 @@ export default function App() {
                         style={{ flex: 1 }}
                     />
                     <span style={{ fontSize: "12px", minWidth: "80px", color: "#666" }}>{(playSpeed / 1000).toFixed(1)}秒/次</span>
+                </div> */}
+
+                {/* 滚动速度控制 */}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
+                    <span style={{ fontSize: "14px", minWidth: "80px" }}>滚动速度:</span>
+                    <input
+                        type="range"
+                        min="50"
+                        max="500"
+                        step="5"
+                        value={scrollSpeed}
+                        onChange={(e) => setScrollSpeed(Number(e.target.value))}
+                        style={{ flex: 1 }}
+                    />
+                    <span style={{ fontSize: "12px", minWidth: "60px", color: "#666" }}>{scrollSpeed}px/s</span>
                 </div>
             </div>
         </div>
