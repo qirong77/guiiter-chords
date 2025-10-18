@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Chord } from "./components/Chord";
 
 // 定义和弦数据类型
@@ -15,6 +15,9 @@ export default function App() {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [playSpeed, setPlaySpeed] = useState<number>(2000); // 播放速度(毫秒)
     const [displayChordList, setDisplayChordList] = useState<ChordData[]>([]);
+
+    // 滚动容器引用
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
     // 所有和弦数据
     const chords: ChordData[] = [
         {
@@ -116,9 +119,19 @@ export default function App() {
         } while (newIndex === currentChordIndex && chords.length > 1);
         return newIndex;
     };
-
+    const initDisplayChordList = () => {
+        setDisplayChordList([]);
+        const list = [];
+        for (let i = 0; i < 10; i++) {
+            list.push(chords[getRandomChordIndex()]);
+        }
+        setDisplayChordList(list);
+    };
     // 播放控制函数
     const togglePlay = () => {
+        if (!isPlaying) {
+            initDisplayChordList();
+        }
         setIsPlaying(!isPlaying);
         if (!isPlaying && currentChordIndex === -1) {
             setCurrentChordIndex(getRandomChordIndex());
@@ -146,6 +159,17 @@ export default function App() {
             return [...v, chords[currentChordIndex]].filter(Boolean);
         });
     }, [currentChordIndex]);
+
+    // 自动滚动到最新的和弦
+    useEffect(() => {
+        if (scrollContainerRef.current && displayChordList.length > 0) {
+            // 滚动到最右侧（最新的和弦）
+            scrollContainerRef.current.scrollTo({
+                left: scrollContainerRef.current.scrollWidth,
+                behavior: "smooth",
+            });
+        }
+    }, [displayChordList]);
     return (
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
             <div style={{ height: 300, overflow: "scroll", border: "1px solid #5b5656ff", marginBottom: 20 }}>
@@ -176,9 +200,31 @@ export default function App() {
                     ))}
                 </div>
             </div>
-            <div style={{ display: "flex", width: "100%", overflow: "scroll" }}>
+            <div
+                ref={scrollContainerRef}
+                style={{
+                    display: "flex",
+                    width: "100%",
+                    overflow: "scroll",
+                    overflowY: "hidden", // 只允许水平滚动
+                    scrollbarWidth: "thin", // Firefox 细滚动条
+                    padding: "10px 0",
+                    background: "#fafafa",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: "8px",
+                }}
+            >
                 {displayChordList.map((chord, index) => (
-                    <div key={`${chord.title}-${index}`} style={{ marginRight: 8 }}>
+                    <div
+                        key={`${chord.title}-${index}`}
+                        style={{
+                            marginRight: 8,
+                            flexShrink: 0, // 防止和弦被压缩
+                            opacity: index === displayChordList.length - 1 ? 1 : 0.7, // 最新的和弦高亮
+                            transform: index === displayChordList.length - 1 ? "scale(1.05)" : "scale(1)",
+                            transition: "all 0.3s ease",
+                        }}
+                    >
                         <Chord title={chord.title} xMarks={chord.xMarks} oMarks={chord.oMarks} strings={chord.strings} />
                     </div>
                 ))}
