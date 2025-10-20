@@ -9,8 +9,99 @@ interface ChordData {
     strings: [number, number][];
 }
 const SPEED_KEY = "scrollSpeed";
+// 所有和弦数据
+const chords: ChordData[] = [
+    {
+        title: "Em",
+        xMarks: [],
+        oMarks: [6, 3, 2, 1],
+        strings: [
+            [2, 4], // 第2品第4弦
+            [2, 5], // 第2品第5弦
+        ],
+    },
+    {
+        title: "E",
+        xMarks: [],
+        oMarks: [6, 2, 1],
+        strings: [
+            [1, 3], // 第1品第3弦
+            [2, 4], // 第2品第4弦
+            [2, 5], // 第2品第5弦
+        ],
+    },
+    {
+        title: "Am",
+        xMarks: [6],
+        oMarks: [2, 1],
+        strings: [
+            [1, 2],
+            [2, 3], // 第2品第3弦
+            [2, 4], // 第2品第4弦
+        ],
+    },
+    {
+        title: "A",
+        xMarks: [6],
+        oMarks: [2, 1],
+        strings: [
+            [2, 2],
+            [2, 3], // 第2品第3弦
+            [2, 4], // 第2品第4弦
+        ],
+    },
+    {
+        title: "Dm",
+        xMarks: [5, 6],
+        oMarks: [4],
+        strings: [
+            [1, 1], // 第1品第1弦
+            [2, 3], // 第2品第3弦
+            [3, 2], // 第3品第2弦
+        ],
+    },
+    {
+        title: "D",
+        xMarks: [5, 6],
+        oMarks: [4],
+        strings: [
+            [2, 1], // 第2品第1弦
+            [2, 3], // 第2品第3弦
+            [3, 2], // 第3品第2弦
+        ],
+    },
+    {
+        title: "G",
+        oMarks: [2, 3, 4],
+        xMarks: [],
+        strings: [
+            [2, 5], // 第2品第5弦
+            [3, 6], // 第3品第6弦
+            [3, 1], // 第3品第1弦
+        ],
+    },
+    {
+        title: "C",
+        xMarks: [6],
+        oMarks: [1, 3],
+        strings: [
+            [1, 2], // 第1品第2弦
+            [2, 4], // 第2品第4弦
+            [3, 5], // 第3品第5弦
+        ],
+    },
+    {
+        title: "Fmaj7",
+        xMarks: [6, 5],
+        oMarks: [1],
+        strings: [
+            [1, 2],
+            [2, 3],
+            [3, 4],
+        ],
+    },
+];
 export default function App() {
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [displayChordList, setDisplayChordList] = useState<ChordData[]>([]);
     const [scrollSpeed, setScrollSpeed] = useState<number>(parseInt(window.localStorage.getItem(SPEED_KEY) || "30", 10)); // 滚动速度 (像素/秒)
     useEffect(() => {
@@ -18,122 +109,19 @@ export default function App() {
     }, [scrollSpeed]);
     // 滚动容器引用
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-    // 所有和弦数据
-    const chords: ChordData[] = [
-        {
-            title: "Em",
-            xMarks: [],
-            oMarks: [6, 3, 2, 1],
-            strings: [
-                [2, 4], // 第2品第4弦
-                [2, 5], // 第2品第5弦
-            ],
-        },
-        {
-            title: "E",
-            xMarks: [],
-            oMarks: [6, 2, 1],
-            strings: [
-                [1, 3], // 第1品第3弦
-                [2, 4], // 第2品第4弦
-                [2, 5], // 第2品第5弦
-            ],
-        },
-        {
-            title: "Am",
-            xMarks: [6],
-            oMarks: [2, 1],
-            strings: [
-                [1, 2],
-                [2, 3], // 第2品第3弦
-                [2, 4], // 第2品第4弦
-            ],
-        },
-        {
-            title: "A",
-            xMarks: [6],
-            oMarks: [2, 1],
-            strings: [
-                [2, 2],
-                [2, 3], // 第2品第3弦
-                [2, 4], // 第2品第4弦
-            ],
-        },
-        {
-            title: "Dm",
-            xMarks: [5, 6],
-            oMarks: [4],
-            strings: [
-                [1, 1], // 第1品第1弦
-                [2, 3], // 第2品第3弦
-                [3, 2], // 第3品第2弦
-            ],
-        },
-        {
-            title: "D",
-            xMarks: [5, 6],
-            oMarks: [4],
-            strings: [
-                [2, 1], // 第2品第1弦
-                [2, 3], // 第2品第3弦
-                [3, 2], // 第3品第2弦
-            ],
-        },
-        {
-            title: "G",
-            oMarks: [2, 3, 4],
-            xMarks: [],
-            strings: [
-                [2, 5], // 第2品第5弦
-                [3, 6], // 第3品第6弦
-                [3, 1], // 第3品第1弦
-            ],
-        },
-        {
-            title: "C",
-            xMarks: [6],
-            oMarks: [1, 3],
-            strings: [
-                [1, 2], // 第1品第2弦
-                [2, 4], // 第2品第4弦
-                [3, 5], // 第3品第5弦
-            ],
-        },
-        {
-            title: "Fmaj7",
-            xMarks: [6, 5],
-            oMarks: [1],
-            strings: [
-                [1, 2],
-                [2, 3],
-                [3, 4],
-            ],
-        },
-    ];
 
     // 获取随机和弦索引
-    const getRandomChordIndex = useCallback(() => {
-        return Math.floor(Math.random() * chords.length);
-    }, [chords.length]);
-    
-    const initDisplayChordList = useCallback(() => {
-        const list = [];
-        // 限制最多50个和弦
-        for (let i = 0; i < Math.min(50, chords.length); i++) {
-            list.push(chords[getRandomChordIndex()]);
-        }
-        setDisplayChordList(list);
-    }, [chords, getRandomChordIndex]);
-    // 播放控制函数
-    const togglePlay = useCallback(() => {
-        if (!isPlaying) {
-            initDisplayChordList();
-        }
-        setIsPlaying(!isPlaying);
-    }, [isPlaying, initDisplayChordList]);
 
+    const initDisplayChordList = useCallback(() => {
+        const list = [...chords];
+        for (let i = 1; i < 5; i++) {
+            list.push(...chords);
+        }
+        const randomList = list.sort(() => 0.5 - Math.random());
+        setDisplayChordList(randomList);
+    }, []);
     useEffect(() => {
-        togglePlay();
+        initDisplayChordList();
     }, []);
     return (
         <div style={{ maxHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -168,7 +156,7 @@ export default function App() {
                     display: "flex",
                     width: "100%",
                     overflow: "hidden",
-                    overflowY: "hidden", 
+                    overflowY: "hidden",
                     marginBottom: 20,
                     height: "300px",
                     paddingTop: "20px",
@@ -182,27 +170,29 @@ export default function App() {
                 <div
                     style={{
                         display: "flex",
-                        animation: isPlaying ? `scroll-left ${100 / scrollSpeed}s linear infinite` : "none",
-                        transform: isPlaying ? "translateX(0)" : "translateX(0)",
+                        animation: `scroll-left ${100 / scrollSpeed}s linear infinite`,
+                        transform: "translateX(0)",
                     }}
                 >
                     {/* 使用 useMemo 优化渲染多倍的和弦列表以实现无缝循环 */}
-                    {useMemo(() => 
-                        Array.from({ length: 3 }).flatMap((_, repeatIndex) =>
-                            displayChordList.map((chord, index) => (
-                                <div
-                                    key={`${chord.title}-${repeatIndex}-${index}`}
-                                    style={{
-                                        marginRight: "10vw",
-                                        flexShrink: 0,
-                                        minWidth: "120px",
-                                        filter: `hue-rotate(${index * 30}deg)`,
-                                    }}
-                                >
-                                    <Chord title={chord.title} xMarks={chord.xMarks} oMarks={chord.oMarks} strings={chord.strings} />
-                                </div>
-                            ))
-                        ), [displayChordList]
+                    {useMemo(
+                        () =>
+                            Array.from({ length: 3 }).flatMap((_, repeatIndex) =>
+                                displayChordList.map((chord, index) => (
+                                    <div
+                                        key={`${chord.title}-${repeatIndex}-${index}`}
+                                        style={{
+                                            marginRight: "10vw",
+                                            flexShrink: 0,
+                                            minWidth: "120px",
+                                            filter: `hue-rotate(${index * 30}deg)`,
+                                        }}
+                                    >
+                                        <Chord title={chord.title} xMarks={chord.xMarks} oMarks={chord.oMarks} strings={chord.strings} />
+                                    </div>
+                                ))
+                            ),
+                        [displayChordList]
                     )}
                 </div>
             </div>
@@ -218,11 +208,10 @@ export default function App() {
                     boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
                 }}
             >
-                {/* 播放/暂停按钮 */}
                 <button
-                    onClick={togglePlay}
+                    onClick={initDisplayChordList}
                     style={{
-                        background: isPlaying ? "#ff4757" : "#007acc",
+                        background: "#007acc",
                         color: "white",
                         border: "none",
                         borderRadius: "5px",
@@ -232,43 +221,17 @@ export default function App() {
                         fontWeight: "bold",
                     }}
                 >
-                    {isPlaying ? "暂停" : "播放"}
+                    换一组
                 </button>
-
-                {/* 当前播放的和弦 */}
-                <div
-                    style={{
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                        minWidth: "100px",
-                    }}
-                >
-                    {displayChordList.length < 0 && "未播放"}
-                </div>
-
-                {/* 和弦切换速度控制 */}
-                {/* <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
-                    <span style={{ fontSize: "14px", minWidth: "80px" }}>切换速度:</span>
-                    <input
-                        type="range"
-                        min="500"
-                        max="5000"
-                        step="100"
-                        value={playSpeed}
-                        onChange={(e) => setPlaySpeed(Number(e.target.value))}
-                        style={{ flex: 1 }}
-                    />
-                    <span style={{ fontSize: "12px", minWidth: "80px", color: "#666" }}>{(playSpeed / 1000).toFixed(1)}秒/次</span>
-                </div> */}
 
                 {/* 滚动速度控制 */}
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
                     <span style={{ fontSize: "14px", minWidth: "80px" }}>滚动速度:</span>
                     <input
                         type="range"
-                        min="1"
-                        max="10"
-                        step="1"
+                        min="0"
+                        max="3"
+                        step="0.05"
                         value={scrollSpeed}
                         onChange={(e) => setScrollSpeed(Number(e.target.value))}
                         style={{ flex: 1 }}
