@@ -1,106 +1,13 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Chord } from "./components/Chord";
+import { chords_song1 } from "./chords/song1";
+import { ChordData } from "./chords/type";
 
 // 定义和弦数据类型
-interface ChordData {
-    title: string;
-    xMarks: number[];
-    oMarks: number[];
-    strings: [number, number][];
-}
+
 const SPEED_KEY = "scrollSpeed";
-// 所有和弦数据
-const chords: ChordData[] = [
-    {
-        title: "Em",
-        xMarks: [],
-        oMarks: [6, 3, 2, 1],
-        strings: [
-            [2, 4], // 第2品第4弦
-            [2, 5], // 第2品第5弦
-        ],
-    },
-    {
-        title: "E",
-        xMarks: [],
-        oMarks: [6, 2, 1],
-        strings: [
-            [1, 3], // 第1品第3弦
-            [2, 4], // 第2品第4弦
-            [2, 5], // 第2品第5弦
-        ],
-    },
-    {
-        title: "Am",
-        xMarks: [6],
-        oMarks: [2, 1],
-        strings: [
-            [1, 2],
-            [2, 3], // 第2品第3弦
-            [2, 4], // 第2品第4弦
-        ],
-    },
-    {
-        title: "A",
-        xMarks: [6],
-        oMarks: [2, 1],
-        strings: [
-            [2, 2],
-            [2, 3], // 第2品第3弦
-            [2, 4], // 第2品第4弦
-        ],
-    },
-    {
-        title: "Dm",
-        xMarks: [5, 6],
-        oMarks: [4],
-        strings: [
-            [1, 1], // 第1品第1弦
-            [2, 3], // 第2品第3弦
-            [3, 2], // 第3品第2弦
-        ],
-    },
-    {
-        title: "D",
-        xMarks: [5, 6],
-        oMarks: [4],
-        strings: [
-            [2, 1], // 第2品第1弦
-            [2, 3], // 第2品第3弦
-            [3, 2], // 第3品第2弦
-        ],
-    },
-    {
-        title: "G",
-        oMarks: [2, 3, 4],
-        xMarks: [],
-        strings: [
-            [2, 5], // 第2品第5弦
-            [3, 6], // 第3品第6弦
-            [3, 1], // 第3品第1弦
-        ],
-    },
-    {
-        title: "C",
-        xMarks: [6],
-        oMarks: [1, 3],
-        strings: [
-            [1, 2], // 第1品第2弦
-            [2, 4], // 第2品第4弦
-            [3, 5], // 第3品第5弦
-        ],
-    },
-    {
-        title: "Fmaj7",
-        xMarks: [6, 5],
-        oMarks: [1],
-        strings: [
-            [1, 2],
-            [2, 3],
-            [3, 4],
-        ],
-    },
-];
+
+const chords = chords_song1
 export default function App() {
     const [displayChordList, setDisplayChordList] = useState<ChordData[]>([]);
     const [scrollSpeed, setScrollSpeed] = useState<number>(parseInt(window.localStorage.getItem(SPEED_KEY) || "30", 10)); // 滚动速度 (像素/秒)
