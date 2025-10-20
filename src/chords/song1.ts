@@ -6,53 +6,59 @@ export const chords_song1: ChordData[] = [
         xMarks: [6],
         oMarks: [3, 1],
         strings: [
-            [2, 4], 
-            [3, 2], 
-            [3, 5], 
-
+            [2, 4],
+            [3, 2],
+            [3, 5],
+            [4, 2],
         ],
     },
     {
         title: "Em7/B",
         xMarks: [],
-        oMarks: [6, 3, 2, 1],
+        oMarks: [],
         strings: [
-            [2, 4], // 第2品第4弦
-            [4, 5], // 第4品第5弦
+            [2, 5],
+            [3, 2],
         ],
     },
     {
-        title: "Em7/bB",
+        title: "Em7/♭B",
         xMarks: [],
-        oMarks: [6, 3, 2, 1],
+        oMarks: [6, 4, 3, 1],
         strings: [
-            [1, 4], // 第1品第4弦
-            [3, 5], // 第3品第5弦
+            [1, 5],
+            [3, 2],
         ],
     },
     {
         title: "Am7",
-        xMarks: [6],
-        oMarks: [5, 3, 2, 1],
+        xMarks: [],
+        oMarks: [],
         strings: [
-            [2, 4], // 第2品第4弦
+            [1, 2],
+            [2, 4],
+            [3, 1],
         ],
     },
     {
         title: "Dm7",
-        xMarks: [5, 6],
-        oMarks: [4, 3],
+        xMarks: [],
+        oMarks: [],
         strings: [
-            [1, 1], // 第1品第1弦
-            [2, 2], // 第2品第2弦
+            [1, 1],
+            [1, 2],
+            [2, 3],
         ],
     },
     {
         title: "Gsus4",
-        xMarks: [6, 5],
-        oMarks: [4, 3, 2],
+        xMarks: [],
+        oMarks: [],
         strings: [
-            [3, 1], // 第3品第1弦
+            [3, 6],
+            [3, 1],
+            [2, 5],
+            [1, 2],
         ],
     },
     {
@@ -60,9 +66,9 @@ export const chords_song1: ChordData[] = [
         oMarks: [2, 3, 4],
         xMarks: [],
         strings: [
-            [2, 5], // 第2品第5弦
-            [3, 6], // 第3品第6弦
-            [3, 1], // 第3品第1弦
+            [2, 5],
+            [3, 6],
+            [3, 1],
         ],
     },
     {
@@ -70,7 +76,8 @@ export const chords_song1: ChordData[] = [
         xMarks: [],
         oMarks: [6, 5, 3, 2, 1],
         strings: [
-            [1, 4], // 第1品第4弦
+            [1, 2],
+            [2, 5],
         ],
     },
 ];
