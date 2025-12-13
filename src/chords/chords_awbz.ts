@@ -1,6 +1,6 @@
 import { ChordData } from "./type";
 
-export const chords_song1: ChordData[] = [
+export const chords_awbz: ChordData[] = [
     {
         title: "C9",
         xMarks: [6],

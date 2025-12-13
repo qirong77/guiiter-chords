@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Chord } from "./components/Chord";
-import { chords_song1 } from "./chords/song1";
 import { ChordData } from "./chords/type";
+import { chords_awbz } from "./chords/chords_awbz";
+import { chords_basic } from "./chords/chords_basic";
 
 // 定义和弦数据类型
 
 const SPEED_KEY = "scrollSpeed";
 
-const chords = chords_song1
+const chords = chords_basic
 export default function App() {
     const [displayChordList, setDisplayChordList] = useState<ChordData[]>([]);
     const [scrollSpeed, setScrollSpeed] = useState<number>(parseInt(window.localStorage.getItem(SPEED_KEY) || "30", 10)); // 滚动速度 (像素/秒)
